@@ -1,0 +1,22 @@
+if (mmInStream.available() > 0)
+{
+    // log command: adb logcat -s "IncomingData" > logcat.txt
+
+    // while the buffer's available and the read buffer hasn't got a full packet
+    // from the Arduino (17 byte packet) keep reading
+    while (mmInStream.available() > 0 && mmInStreamReadBuffer.size() < 18)
+        mmInStreamReadBuffer.add(mmInStream.read());
+
+    // if we've got a full packet from the
+    if (mmInStreamReadBuffer.size() == 17) {
+        int[] ints = Ints.toArray(mmInStreamReadBuffer);
+
+        // Send the obtained bytes to the UI Activity
+        Log.d("IncomingData", Arrays.toString(ints));
+        //mHandler.obtainMessage(Constants.MESSAGE_READ, ints.length, -1, ints).sendToTarget();
+
+        // clear the read buffer
+        mmInStreamReadBuffer.clear();
+    }
+
+}

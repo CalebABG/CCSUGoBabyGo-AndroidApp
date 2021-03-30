@@ -1,0 +1,29 @@
+App Improvements/ToDo's:
+
+-Add portrait/screen-rotation lock
+-Optimize string interpolation: make a global 'unit's' variable, set each sensor textview.'text' property to the variable
+    - then on click handler for sensor Switch component, update the unit's variable, then set
+    - each sensor textview.'text' property to the updated variable
+-Add visual components for keep-alive boolean (safety check on incoming data from Arduino
+    - send a 0x01 to Arduino as long as the connection is alive,
+    - on Arduino side:
+        - in the isr, check if the keep-alive value is == 0x01, else send stop command to motors
+            - if connection is still alive, echo to the app that the emergency stop was called
+        - in the main loop, perform same check (update volatile byte variable) if the transferred
+            - byte was 0x01, then set volatile variable to true, else set to false
+-Add visual for petal position (possible graphic or Switch component)
+-Add visual for gear shift ()
+-Add visual for steering position (angle <180 - 0 || 0 - 180>)
+-Add onSensorChange handler for sending sensor values to Arduino
+    - map the values for the x [-11 -> 11] and for the y [
+
+Sources:
+-https://stackoverflow.com/questions/6533942/adding-gif-image-in-an-imageview-in-android
+-Gif: https://dribbble.com/shots/3205017-Animated-Car-Icon-Material-Design
+-Gauge: https://github.com/harjot-oberai/Croller
+-Bluetooth resource: https://github.com/appsinthesky/Kotlin-Bluetooth
+-Axis icon: http://chittagongit.com/icon/axis-icon-20.html
+-Color Complement Calc: https://www.sessions.edu/color-calculator/
+-Set Floating Action Button Color: https://stackoverflow.com/questions/30969455/android-changing-floating-action-button-color
+-Back Button Prompt: https://stackoverflow.com/questions/6290599/prompt-user-when-back-button-is-pressed
+-GoBabyGo Icon: https://www.facebook.com/GBGCT/
