@@ -180,7 +180,7 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
     }
 
     @ExperimentalUnsignedTypes
-    private fun createSensorPacket(msgId: Int, packetData: MutableList<Int> = mutableListOf()): ByteArray {
+    private fun createSensorPacket(packetId: Int, packetData: MutableList<Int> = mutableListOf()): ByteArray {
         /*
         Index     0:      Packet START Byte
         Index     1:      Packet ID (Type of Packet)
@@ -199,7 +199,7 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         val byteArray = ByteArray(17)
 
         // Set Header
-        setSensorPacketHeader(msgId, byteArray)
+        setSensorPacketHeader(packetId, byteArray)
 
         // Set Data
         setSensorPacketData(packetData, byteArray)
