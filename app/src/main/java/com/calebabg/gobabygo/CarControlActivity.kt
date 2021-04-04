@@ -91,11 +91,11 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
             updateShieldIconColor()
 
             if (parentAppControlOverride) {
-                Toast.makeText(this, "Parental Override Active", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Activating Parental Control", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Deactivating Parental Override", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Deactivating Parental Control", Toast.LENGTH_SHORT).show()
                 if (BLUETOOTH_CONNECTED) {
-                    val packet = createSensorPacket(Constants.STOP_MOTORS_ID)
+                    val packet = createSensorPacket(Constants.PARENTAL_CONTROL_PACKET_ID)
                     gbgBTService!!.write(packet)
                 }
             }
@@ -103,6 +103,11 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
 
         emergencyStopBtn.setOnClickListener {
             Toast.makeText(this, "Stopping Motors!", Toast.LENGTH_SHORT).show()
+            // TODO: Extract this to function
+            if (BLUETOOTH_CONNECTED) {
+                val packet = createSensorPacket(Constants.STOP_MOTORS_PACKET_ID)
+                gbgBTService!!.write(packet)
+            }
         }
         emergencyStopBtn.setOnLongClickListener {
             Toast.makeText(
@@ -131,7 +136,7 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         sendPacketBtn.setOnClickListener {
             // Send packets
             if (BLUETOOTH_CONNECTED) {
-                val packet = createSensorPacket(Constants.STOP_MOTORS_ID)
+                val packet = createSensorPacket(Constants.STOP_MOTORS_PACKET_ID)
                 gbgBTService!!.write(packet)
             }
         }
@@ -341,7 +346,7 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         if (parentAppControlOverride) {
             // Send packets
             if (BLUETOOTH_CONNECTED) {
-                val packet = createSensorPacket(Constants.SENSOR_DATA_ID, mutableListOf(calcAccelX, calcAccelY))
+                val packet = createSensorPacket(Constants.SENSOR_DATA_PACKET_ID, mutableListOf(calcAccelX, calcAccelY))
                 gbgBTService!!.write(packet)
             }
         }

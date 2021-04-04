@@ -16,9 +16,9 @@ public class Constants {
     // HC-06
     public static final String GoBabyGoBTMAC = "98:D3:B1:FD:32:CE";
 
-    public static final int SENSOR_DATA_ID = 0xD7;
-    public static final int STOP_MOTORS_ID = 0xE0;
-    public static final int PARENTAL_OVERRIDE_ID = 0xDF;
+    public static final int SENSOR_DATA_PACKET_ID = 0xD7;
+    public static final int STOP_MOTORS_PACKET_ID = 0xE0;
+    public static final int PARENTAL_CONTROL_PACKET_ID = 0xDF;
 
     // Message types sent from the GBGBluetoothService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;

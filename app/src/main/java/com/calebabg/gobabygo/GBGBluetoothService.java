@@ -551,11 +551,11 @@ public class GBGBluetoothService {
                             case 16: // 17th Byte (End of packet: 0x04)
                                 // handle state based on ID
                                 switch (packetId) {
-                                    case (byte) Constants.STOP_MOTORS_ID:
+                                    case (byte) Constants.STOP_MOTORS_PACKET_ID:
                                         // TODO: Handle emergency stop message ID type
                                         break;
 
-                                    case (byte) Constants.SENSOR_DATA_ID: {
+                                    case (byte) Constants.SENSOR_DATA_PACKET_ID: {
                                         Log.d("EEE", "" + packetId + " " + packetChecksum + " " + accelerometerX + " " + accelerometerY);
 
                                         // Send the obtained bytes to the UI Activity
@@ -564,7 +564,7 @@ public class GBGBluetoothService {
                                         break;
                                     }
 
-                                    case (byte) Constants.PARENTAL_OVERRIDE_ID:
+                                    case (byte) Constants.PARENTAL_CONTROL_PACKET_ID:
                                         // TODO: Handle parental override message ID type
                                         break;
                                 }
