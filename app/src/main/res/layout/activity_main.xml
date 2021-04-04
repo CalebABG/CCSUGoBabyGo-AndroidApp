@@ -16,34 +16,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="158dp"
-                android:layout_height="140dp"
+                android:layout_width="185dp"
+                android:layout_height="185dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="14dp"
                 android:adjustViewBounds="false"
                 android:src="@drawable/gobabygoct_icon" />
-
-            <!--<pl.droidsonroids.gif.GifImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="140dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginTop="4dp"-->
-            <!--android:layout_marginBottom="10dp"-->
-            <!--android:adjustViewBounds="false"-->
-            <!--android:src="@drawable/material_car" />-->
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/main_greeting_1"
                 android:textAlignment="center"
@@ -54,22 +40,21 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginVertical="25dp"
+                android:paddingHorizontal="4dp"
                 android:text="@string/main_info_1"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="26sp" />
 
             <Button
-                android:id="@+id/main_begin_btn"
+                android:id="@+id/continueBtn"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="15dp"
                 android:background="@color/colorPrimary"
                 android:fontFamily="sans-serif"
-                android:text="@string/tap_to_begin"
+                android:text="@string/tap_to_continue"
                 android:textColor="@android:color/white"
                 android:textSize="30sp" />
         </LinearLayout>

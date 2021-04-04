@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">GoBabyGo</string>
     <string name="main_greeting_1">Drivers, Start Your Engines!</string>
-    <string name="main_info_1">Welcome to the GoBabyGo Remote Car Control App!</string>
-    <string name="tap_to_begin">Tap to Begin!</string>
+    <string name="main_info_1">Welcome to the CCSU GoBabyGo Remote Car Control App</string>
+    <string name="tap_to_continue">Tap to Continue</string>
     <string name="speed_gauge">Speed Gauge</string>
     <string name="raw_sensor_unit">m/s\u00B2</string>
     <string name="raw_sensor_tempval">0.00 m/s\u00B2</string>

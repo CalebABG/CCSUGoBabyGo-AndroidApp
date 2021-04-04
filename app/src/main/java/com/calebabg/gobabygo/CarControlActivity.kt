@@ -32,8 +32,7 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         var accelMaxX = 0
         var accelMaxY = 0
 
-        /* Member object for the chat services */
-        var mChatService: GBGBluetoothService? = null
+        var gbgBTService: GBGBluetoothService? = null
 
         lateinit var sensorManager: SensorManager
         lateinit var accelerometer: Sensor
@@ -43,20 +42,20 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         }
 
         fun disconnectFromArduinoBluetooth() {
-            mChatService?.stop()
+            gbgBTService?.stop()
         }
 
         private fun connectDevice(address: String) {
             val device = MainActivity.mBluetoothAdapter!!.getRemoteDevice(address)
 
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService!!.state == GBGBluetoothService.STATE_NONE) {
+            if (gbgBTService!!.state == GBGBluetoothService.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService!!.start()
+                gbgBTService!!.start()
             }
 
             // Attempt to connect to the device
-            mChatService!!.connect(device, true)
+            gbgBTService!!.connect(device, true)
         }
     }
 
@@ -75,11 +74,12 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_layout)
         updateShieldIconColor()
+        updateSensorInfoText()
 
         Log.d(Constants.TAG, "setupBT()")
 
         // Initialize the GBGBluetoothService to perform bluetooth connections
-        mChatService = GBGBluetoothService(this, mHandler)
+        gbgBTService = GBGBluetoothService(this, mHandler)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -94,7 +94,10 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
                 Toast.makeText(this, "Parental Override Active", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Deactivating Parental Override", Toast.LENGTH_SHORT).show()
-                if (BLUETOOTH_CONNECTED) mChatService!!.write(createSensorPacket(Constants.STOP_MOTORS_ID))
+                if (BLUETOOTH_CONNECTED) {
+                    val packet = createSensorPacket(Constants.STOP_MOTORS_ID)
+                    gbgBTService!!.write(packet)
+                }
             }
         }
 
@@ -112,10 +115,8 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
 
         btReconnectBtn.setOnClickListener {
             when {
-                BLUETOOTH_CONNECTED -> Toast.makeText(this, "Already Connected", Toast.LENGTH_SHORT)
-                    .show()
-                BLUETOOTH_CONNECTING -> Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT)
-                    .show()
+                BLUETOOTH_CONNECTED -> Toast.makeText(this, "Already Connected", Toast.LENGTH_SHORT).show()
+                BLUETOOTH_CONNECTING -> Toast.makeText(this, "Connecting...", Toast.LENGTH_SHORT).show()
                 else -> connectToArduinoBluetooth()
             }
         }
@@ -125,27 +126,25 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
             else Toast.makeText(this, "Not Connected", Toast.LENGTH_SHORT).show()
         }
 
-        accel_Switch.setOnClickListener {
-            if (accel_Switch.isChecked) accel_Switch.text = "Calc"
-            else accel_Switch.text = "Raw"
-        }
+        accel_Switch.setOnClickListener { updateSensorInfoText() }
 
         sendPacketBtn.setOnClickListener {
             // Send packets
             if (BLUETOOTH_CONNECTED) {
-                val packet: ByteArray = createSensorPacket(0xE0)
-                mChatService!!.write(packet)
-                Log.d("EEE", "Packet: ${packet.toHex()}")
+                val packet = createSensorPacket(Constants.STOP_MOTORS_ID)
+                gbgBTService!!.write(packet)
             }
         }
     }
 
     private fun updateShieldIconColor() {
-        val bgTintColor =
-            if (parentAppControlOverride) Color.parseColor(activeShieldColor) else Color.parseColor(
-                inactiveShieldColor
-            )
+        val bgTintColor = if (parentAppControlOverride) Color.parseColor(activeShieldColor) else Color.parseColor(inactiveShieldColor)
         parentalOverrideBtn.backgroundTintList = ColorStateList.valueOf(bgTintColor)
+    }
+
+    private fun updateSensorInfoText() {
+        val sensorText = if (accel_Switch.isChecked) "Calc" else "Raw"
+        accel_Switch.text = sensorText
     }
 
     override fun onResume() {
@@ -156,11 +155,11 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
+        if (gbgBTService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService!!.state == GBGBluetoothService.STATE_NONE) {
+            if (gbgBTService!!.state == GBGBluetoothService.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService!!.start()
+                gbgBTService!!.start()
             }
         }
     }
@@ -168,18 +167,15 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
     override fun onDestroy() {
         super.onDestroy()
 
-        if (mChatService != null) {
-            mChatService!!.stop()
+        if (gbgBTService != null) {
+            gbgBTService!!.stop()
         }
 
         finish()
     }
 
     @ExperimentalUnsignedTypes
-    private fun createSensorPacket(
-        msgId: Int,
-        packetData: MutableList<Int> = mutableListOf()
-    ): ByteArray {
+    private fun createSensorPacket(msgId: Int, packetData: MutableList<Int> = mutableListOf()): ByteArray {
         /*
         Index     0:      Packet START Byte
         Index     1:      Packet ID (Type of Packet)
@@ -345,12 +341,8 @@ class ControlCarActivity : AppCompatActivity(), SensorEventListener {
         if (parentAppControlOverride) {
             // Send packets
             if (BLUETOOTH_CONNECTED) {
-                val packet: ByteArray = createSensorPacket(
-                    Constants.SENSOR_DATA_ID,
-                    mutableListOf(calcAccelX, calcAccelY)
-                )
-                mChatService!!.write(packet)
-                Log.d("EEE", "Packet: ${packet.toHex()}")
+                val packet = createSensorPacket(Constants.SENSOR_DATA_ID, mutableListOf(calcAccelX, calcAccelY))
+                gbgBTService!!.write(packet)
             }
         }
     }
